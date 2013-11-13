@@ -1,7 +1,7 @@
 var Game = function(player1, player2) {
   this.player1 = player1
   this.player2 = player2
-} 
+}
 
 Game.prototype.onKeyUp = function(keyPressed) {
   if (String.fromCharCode(keyPressed) === 'A')
@@ -9,34 +9,37 @@ Game.prototype.onKeyUp = function(keyPressed) {
   if (String.fromCharCode(keyPressed) === 'M')
     this.player2.advancePosition()
 
-  this.winner()
-  this.winning()
+  this.isGameOver()
+  this.updateTrack()
 }
 
-Game.prototype.winning = function() {
+Game.prototype.updateTrack = function() {
   if (this.player1.position > this.player2.position) {
-    $('#player1_strip td').css('border', 'solid green')
+   this.player1.strip.find('td').css('border', 'solid green')
    this.player2.strip.find('td').css('border', 'solid red')
+ }
+ if (this.player1.position < this.player2.position) {
+   this.player1.strip.find('td').css('border', 'solid red')
+   this.player2.strip.find('td').css('border', 'solid green')
+ }
+ if (this.player1.position === this.player2.position) {
+   this.player1.strip.find('td').css('border', 'solid black')
+   this.player2.strip.find('td').css('border', 'solid black')
+ }
+}
+
+Game.prototype.isGameOver = function(){
+  if (this.player1.strip.children().length === this.player1.position) {
+    this.finishGame(this.player1)
   }
-  if (player1count < player2count) {
-    $('#player1_strip td').css('border', 'solid red')
-    this.player2.strip.find('td').css('border', 'solid green')
-  }
-  if (player1count === player2count) {
-    $('#player1_strip td').css('border', 'solid black')
-    this.player2.strip.find('td').css('border', 'solid black')
+  if (this.player2.strip.children().length ===this.player2.position) {
+    this.finishGame(this.player2)
   }
 }
 
-function winner() {
-    if ($('#player1_strip').children().length === player1count) {
-      console.log('Player1 won!')
-      $(document).unbind('keyup')
-    }
-    if ($('#player2_strip').children().length === player2count) {
-      console.log('Player2 won!')
-      $(document).unbind('keyup')
-    }
+Game.prototype.finishGame = function(player) {
+  console.log(player.name + " won!")
+  $(document).unbind('keyup')
 }
 
 
